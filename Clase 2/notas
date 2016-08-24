@@ -1,0 +1,27 @@
+Float
+- Tiene un espacio para la "mantiza" y otro espacio para el "exponente"
+
+4 < 5 :: Bool  
+- 4 < 5 es un predicado, por lo tanto devuelve un boolean.
+
+Hasskell lenguaje lazy
+
+nombreFuncion :: TipoVariable1 -> TipoVariable2 -> TipoDeSalida
+nombreFuncion variable1 variable2 = variable1 + variable2
+
+En este caso (TipoVariable1 -> TipoVariable2) es el dominio, TipoDeSalida es el co-dominio
+Las "::" se le llama signatura
+
+Num a 
+
+Num: Clases de tipos (Type classes), agrupan a una serie de tipos de datos. (Int, Integer, Float, ...)
+
+Las listas NO tienen índice, pero sí están ordenados (wtf haskell bitch.)
+
+Acciones el lista
+head		Me devuelve el primer elemento de la lista
+tail  		Me devuelve la lista sin el primer elemento
+(:) 		Agrega un elemento del tipo a, al principio de la lista
+(++)		Concatena dos listas, en el orden que se las doy
+length		Cantidad de elementos en lista
+reverse		Devuelve la lista con el orden invertido
