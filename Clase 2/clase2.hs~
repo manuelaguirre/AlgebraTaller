@@ -40,5 +40,5 @@ iniciales nombre apellido = [head nombre, '.', head apellido, '.']
 pendiente :: (Float, Float) -> (Float, Float) -> (Float, Float)
 pendiente a1 a2 = ((snd a2) - (snd a1), fst(a2) - fst(a1))
 
-pendienteSec :: (Float, Float) -> (Float, Float) -> Float
+pendienteSec :: (Float, Float) -> (Float, Float) -> Fractional
 pendienteSec a1 a2 = (snd a2 - snd a1) / (fst a2 - fst a1)

@@ -1,0 +1,44 @@
+fib :: Integer -> Integer
+fib x | x == 0 = 1
+      | x == 1 = 1
+      | otherwise = (fib (x - 1) + fib (x - 2))
+
+par :: Integer -> Bool
+par x | x < 0 = par (abs x)
+      | x == 0 = True
+      | x == 1 = False
+      | otherwise = par (x - 2)
+
+-- Otra forma
+parCheto :: Integer -> Bool
+parCheto x | x > 0 = not (parCheto (x-1))
+           | x == 0 = True
+
+sumaImpares :: Integer -> Integer
+sumaImpares n | n == 0 = 0
+              | n == 1 = 1
+              | otherwise = sumaImpares (n-1) + (2*n - 1)
+
+esM3 :: Integer -> Bool
+esM3 x | x < 3 = False
+       | x == 3 = True
+       | otherwise = esM3 (x - 3) 
+
+dobleFact :: Integer -> Integer
+dobleFact 0 = 1
+dobleFact 1 = 1
+dobleFact x = x * (dobleFact (x-2))
+
+combi :: Integer -> Integer -> Integer
+combi n m | n == m = 1
+          | m == 0 = 1
+	  | otherwise = combi (n-1) m + combi (n-1) (m-1)
+
+rompeteN :: Integer -> Bool
+rompeteN x | x == 0 = True
+           | otherwise = rompeteN (x-1)
+
+-- Mi tope de número válido a sumar va a ser sqrt(x)
+--sumaCuadMenor
+sumaCuadMenor x | x < 10 = 1
+                | otherwise = (div (round(sqrt(x)) + 1) 2)^2

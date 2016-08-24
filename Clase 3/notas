@@ -1,0 +1,7 @@
+Clase 3
+
+redex = Expresión que voy a reducir primero
+
+Al ser un lenguaje lazy lo primero que va a ejecutara es "lo de más afuera"
+
+Cuando hace redex "reemplaza sintácticamente" 
