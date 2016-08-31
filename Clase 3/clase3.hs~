@@ -26,7 +26,6 @@ esM3 x | x < 3 = False
 
 dobleFact :: Integer -> Integer
 dobleFact 0 = 1
-dobleFact 1 = 1
 dobleFact x = x * (dobleFact (x-2))
 
 combi :: Integer -> Integer -> Integer
@@ -39,6 +38,13 @@ rompeteN x | x == 0 = True
            | otherwise = rompeteN (x-1)
 
 -- Mi tope de número válido a sumar va a ser sqrt(x)
---sumaCuadMenor
-sumaCuadMenor x | x < 10 = 1
-                | otherwise = (div (round(sqrt(x)) + 1) 2)^2
+sumaCuadMenorCheto x | x <= 1 = 0
+                     | x < 10 = 1
+                     | otherwise = (div (round(sqrt(x)) + 1) 2)^2
+
+sumaImparesTq :: Integer -> Bool
+sumaImparesTq indice miNum = (2*indice - 1)^2 < miNum
+
+simp x | sumaImparesTq x 1
+       | sumaImparesTq x n+1
+
