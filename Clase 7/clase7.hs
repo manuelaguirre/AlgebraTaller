@@ -61,7 +61,7 @@ sonIguales :: Eq a => Lista a -> Lista a -> Bool
 sonIguales xs ys | (longitud xs /= longitud ys) = False
                  | otherwise =  (cabeza xs == cabeza ys) && sonIguales (cola xs) (cola ys)
 
-instance Eq a => Eq (Lista a) --where
+--instance Eq a => Eq (Lista a) --where
 --Eq sonIguales _ _ = True
 --Eq sonIguales _ _ = False
 ---- ponele que es algo tipo quizas quien sabe esto
@@ -79,3 +79,15 @@ iniciales :: [ Char ] -> [ Char ] -> [ Char ]
 iniciales nombre apellido = [n,a]
     where ( n : _ ) = head nombre : []
           ( a : _ ) = head apellido : []
+
+
+tuplas :: [a] -> [b] -> [(a,b)]
+tuplas _ [] = []
+tuplas [] _ = []
+tuplas (z : zs) (x : xs) = (z,x) : tuplas zs xs
+
+intercalar :: [a] -> [a] -> [a]
+intercalar [] [] = []
+intercalar [] (y : ys) = y : ys
+intercalar (x : xs) [] = x : xs
+intercalar (x : xs) (y : ys) = [x,+ intercalar xs ys y] +
