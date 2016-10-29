@@ -70,8 +70,11 @@ obtenerRNAparaCodificar :: CadenaRNA -> CadenaRNA
 obtenerRNAparaCodificar rna = finalRNA (principioRNA rna)
 
 obtenerProteinaDeRNA :: CadenaRNA -> [Proteina]
-obtenerProteinaDeRNA rna = [traducirListaDeCodonesAAminoacidos (obtenerRNAparaCodificar  rna)]
+obtenerProteinaDeRNA rna | length rna > 0 = [traducirListaDeCodonesAAminoacidos (obtenerRNAparaCodificar  rna)] ++ obtenerProteinaDeRNA ( principioRNA rna )
+                         | otherwise = []
 
+obtenerProteinaDeDNA :: CadenaDNA -> [Proteina]
+obtenerProteinaDeDNA dna = obtenerProteinaDeRNA (transcribir dna)
 
 --
 sincronizaConCodonDeFin :: CadenaRNA -> Bool
@@ -84,7 +87,7 @@ sincronizaConCodonDeFin (U : G : A : _) = True
 sincronizaConCodonDeFin (b1 : b2 : b3 : rna) = False || sincronizaConCodonDeFin (rna)
 
 obtenerProteinas :: CadenaDNA -> [Proteina]
-obtenerProteinas = error "Implementar"
+obtenerProteinas dna = (obtenerProteinaDeDNA dna) ++ (obtenerProteinaDeDNA (reverse dna))
 -- Dada una cadena de DNA devuelve una lista de las proteinas codificandas. En caso de que una
 -- secuencia codifique más de una proteína, todas deben estar presentes en la lista que devuelva la
 -- función. El orden en que deben aparecer es: 1) las codificadas por la secuencia original, 2) por la
