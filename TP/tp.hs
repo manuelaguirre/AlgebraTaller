@@ -19,8 +19,6 @@ type Codon = (BaseNucleotidica, BaseNucleotidica, BaseNucleotidica)
 data Aminoacido = Phe | Ser | Tyr | Cys | Leu | Trp | Pro | His | Arg | Gln | Ile | Thr | Asn | Lys | Met | Val | Ala | Asp | Gly | Glu deriving Show
 type Proteina = [Aminoacido]
 
--- Implementar
-
 complementarBase :: BaseNucleotidica -> BaseNucleotidica
 complementarBase A = T
 complementarBase T = A
@@ -70,7 +68,7 @@ obtenerRNAparaCodificar :: CadenaRNA -> CadenaRNA
 obtenerRNAparaCodificar rna = finalRNA (principioRNA rna)
 
 obtenerProteinaDeRNA :: CadenaRNA -> [Proteina]
-obtenerProteinaDeRNA rna | length rna > 0 = [traducirListaDeCodonesAAminoacidos (obtenerRNAparaCodificar  rna)] ++ obtenerProteinaDeRNA ( principioRNA rna )
+obtenerProteinaDeRNA rna | length (obtenerRNAparaCodificar  rna) > 0= [traducirListaDeCodonesAAminoacidos (obtenerRNAparaCodificar  rna)] ++ obtenerProteinaDeRNA ( principioRNA rna )
                          | otherwise = []
 
 obtenerProteinaDeDNA :: CadenaDNA -> [Proteina]
@@ -87,7 +85,7 @@ sincronizaConCodonDeFin (U : G : A : _) = True
 sincronizaConCodonDeFin (b1 : b2 : b3 : rna) = False || sincronizaConCodonDeFin (rna)
 
 obtenerProteinas :: CadenaDNA -> [Proteina]
-obtenerProteinas dna = (obtenerProteinaDeDNA dna) ++ (obtenerProteinaDeDNA (reverse dna))
+obtenerProteinas dna = (obtenerProteinaDeDNA dna) ++ (obtenerProteinaDeDNA (reverse dna)) ++ obtenerProteinaDeDNA (complementarCadenaDNA dna) ++ obtenerProteinaDeDNA (reverse (complementarCadenaDNA dna))
 -- Dada una cadena de DNA devuelve una lista de las proteinas codificandas. En caso de que una
 -- secuencia codifique más de una proteína, todas deben estar presentes en la lista que devuelva la
 -- función. El orden en que deben aparecer es: 1) las codificadas por la secuencia original, 2) por la
