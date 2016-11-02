@@ -1,15 +1,11 @@
--- A <=> T
--- C <=> G
--- Sí mRNA => T = U (reemplaza las Ts por Us)
--- mRNA está formado por secuencia de codones
--- AUG abre la secuencia y cierra la secuencia UAA, UAG, UGA
--- cada codón tiene asociada una proteína dependiendo del orden de las letras (Ver tabla en PDF)
+-- Integarntes: Manuel Aguirre, Max Schulkin, Alejo Amiras
+-- Turno: Miércoles (Tarde)
 
 ------ TESTS ------
-
-cadenaDNA1 = [A,T,A,C,T,C,G,T,A,A,T,T,C,A,C,T,C,C]  -- >        [[Ser,Ile,Lys]]
-cadenaDNA2 = [T,T,A,A,T,A,C,G,A,C,A,T,A,A,T,T,A,T]  -- >        [[Leu,Tyr],[Ser,Tyr]]
-cadenaRNA1 = [A,U,G,A,A,A,A,U,G,A,A,A,U,A,A,A,A,A,U,A,A] -- >   [[Lys,Met,Lys],[Lys]]
+cadenaDNA1 = [A,T,A,C,T,C,G,T,A,A,T,T,C,A,C,T,C,C]          -- >     [[Ser,Ile,Lys]]
+cadenaDNA2 = [T,T,A,A,T,A,C,G,A,C,A,T,A,A,T,T,A,T]          -- >     [[Leu,Tyr],[Ser,Tyr]]
+cadenaDNA3 = [G,C,C,T,T,G,A,T,A,T,G,G,A,G,A,A,C,T,C,A,T,T]  -- >     []
+cadenaRNA1 = [A,U,G,A,A,A,A,U,G,A,A,A,U,A,A,A,A,A,U,A,A]    -- >     [[Lys,Met,Lys],[Lys]]
 ---- END TESTS ----
 
 data BaseNucleotidica = A | C | G | T | U deriving (Eq,Show)
