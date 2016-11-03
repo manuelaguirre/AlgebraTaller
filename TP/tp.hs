@@ -57,9 +57,9 @@ finalRNA :: CadenaRNA -> CadenaRNA
 finalRNA [] = []
 finalRNA (b1 : []) = []
 finalRNA (b1 : b2 : []) = []
-finalRNA (U : A : G : r) = []
-finalRNA (U : A : A : r) = []
-finalRNA (U : G : A : r) = []
+finalRNA (U : A : G : _) = []
+finalRNA (U : A : A : _) = []
+finalRNA (U : G : A : _) = []
 finalRNA (b1 : b2 : b3 : rna) = [b1,b2,b3] ++ finalRNA (rna)
 
 -- obtenerRNAparaCodificar [G, G, A, A, A, U, G, T, T, T, T, T, T,  U, G, A] FUNCIONÓ
