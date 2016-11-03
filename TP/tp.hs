@@ -1,3 +1,5 @@
+module TP where
+
 -- Integarntes: Manuel Aguirre, Max Schulkin, Alejo Amiras
 -- Turno: Miércoles (Tarde)
 
@@ -6,13 +8,14 @@ cadenaDNA1 = [A,T,A,C,T,C,G,T,A,A,T,T,C,A,C,T,C,C]          -- >     [[Ser,Ile,L
 cadenaDNA2 = [T,T,A,A,T,A,C,G,A,C,A,T,A,A,T,T,A,T]          -- >     [[Leu,Tyr],[Ser,Tyr]]
 cadenaDNA3 = [G,C,C,T,T,G,A,T,A,T,G,G,A,G,A,A,C,T,C,A,T,T]  -- >     []
 cadenaRNA1 = [A,U,G,A,A,A,A,U,G,A,A,A,U,A,A,A,A,A,U,A,A]    -- >     [[Lys,Met,Lys],[Lys]]
+--test10 = [A,U,G,U,G,A,A,U,G,U,U,U,U,G,A]                    -- >     [[Phe]]
 ---- END TESTS ----
 
 data BaseNucleotidica = A | C | G | T | U deriving (Eq,Show)
 type CadenaDNA = [BaseNucleotidica]
 type CadenaRNA = [BaseNucleotidica]
 type Codon = (BaseNucleotidica, BaseNucleotidica, BaseNucleotidica)
-data Aminoacido = Phe | Ser | Tyr | Cys | Leu | Trp | Pro | His | Arg | Gln | Ile | Thr | Asn | Lys | Met | Val | Ala | Asp | Gly | Glu deriving Show
+data Aminoacido = Phe | Ser | Tyr | Cys | Leu | Trp | Pro | His | Arg | Gln | Ile | Thr | Asn | Lys | Met | Val | Ala | Asp | Gly | Glu deriving (Eq, Show)
 type Proteina = [Aminoacido]
 
 complementarBase :: BaseNucleotidica -> BaseNucleotidica
@@ -54,9 +57,9 @@ finalRNA :: CadenaRNA -> CadenaRNA
 finalRNA [] = []
 finalRNA (b1 : []) = []
 finalRNA (b1 : b2 : []) = []
-finalRNA (U : A : G : _) = []
-finalRNA (U : A : A : _) = []
-finalRNA (U : G : A : _) = []
+finalRNA (U : A : G : r) = []
+finalRNA (U : A : A : r) = []
+finalRNA (U : G : A : r) = []
 finalRNA (b1 : b2 : b3 : rna) = [b1,b2,b3] ++ finalRNA (rna)
 
 -- obtenerRNAparaCodificar [G, G, A, A, A, U, G, T, T, T, T, T, T,  U, G, A] FUNCIONÓ
@@ -64,7 +67,7 @@ obtenerRNAparaCodificar :: CadenaRNA -> CadenaRNA
 obtenerRNAparaCodificar rna = finalRNA (principioRNA rna)
 
 obtenerProteinaDeRNA :: CadenaRNA -> [Proteina]
-obtenerProteinaDeRNA rna | length (obtenerRNAparaCodificar  rna) > 0= [traducirListaDeCodonesAAminoacidos (obtenerRNAparaCodificar  rna)] ++ obtenerProteinaDeRNA ( principioRNA rna )
+obtenerProteinaDeRNA rna | length (obtenerRNAparaCodificar  rna) > 0 = [traducirListaDeCodonesAAminoacidos (obtenerRNAparaCodificar  rna)] ++ obtenerProteinaDeRNA ( principioRNA rna )
                          | otherwise = []
 
 obtenerProteinaDeDNA :: CadenaDNA -> [Proteina]
