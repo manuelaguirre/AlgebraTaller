@@ -3,7 +3,7 @@ module TPv2 where
 -- Integarntes: Manuel Aguirre, Max Schulkin, Alejo Amiras
 -- Turno: Miércoles (Tarde)
 
------- TESTS ------
+------ TESTS PROPIOS ------
 cadenaDNA1 = [A,T,A,C,T,C,G,T,A,A,T,T,C,A,C,T,C,C]          -- >     [[Ser,Ile,Lys]]
 cadenaRNA1 = transcribir cadenaDNA1
 cadenaDNA2 = [T,T,A,A,T,A,C,G,A,C,A,T,A,A,T,T,A,T]          -- >     [[Leu,Tyr],[Ser,Tyr]]
@@ -11,12 +11,7 @@ cadenaRNA2 = transcribir cadenaDNA2
 cadenaDNA3 = [G,C,C,T,T,G,A,T,A,T,G,G,A,G,A,A,C,T,C,A,T,T]  -- >     []
 cadenaRNA3 = transcribir cadenaDNA3
 cadenaRNA4 = [A,U,G,A,A,A,A,U,G,A,A,A,U,A,A,A,A,A,U,A,A]    -- >     [[Lys,Met,Lys],[Lys]]
-pest10 = [A,U,G,U,G,A,A,U,G,U,U,U,U,G,A]                    -- >     [[Phe]]
-
--- El que no funciona (hay algo raro cuando se evalúa la cadena reverse) --
-cb = [A,T,G,T,C,G,A,T,C,A,G,C,A,T,C,G,A,C,T,A,C,G,A,C,T,A,C,G,A,C,G,A,C,T,A,C,A,G,C,A,T,C,A,G,T,C,A,G,T,C,A,T,C,A,G,C,A,T,C,A,G,T,A,C,C,T,A,C,T,A,C,T,C,A,A,A,C,A,C,C,A,C,A,G,A,T,A,T,T,T,G,A,G,A,T,T,A,A,G,T,A,A,T,A,G,G,A,A,G,T,C,C,C,C,A,T,A,G,A]
-mb = [[Leu,Met,Leu,Leu,Met,Ser],[Leu,Leu,Met,Ser],[Ser],[Met,Ser,Leu,Trp,Cys,Leu],[Ser,Leu,Trp,Cys,Leu],[Ser,Ile,Ser,Ile,Asp,Tyr,Asp,Tyr,Asp,Asp,Tyr,Ser,Ile,Ser,Gln,Ser,Ser,Ala,Ser,Val,Pro,Thr,Thr,Gln,Thr,Pro,Gln,Ile,Phe,Glu,Ile,Lys],[Gly,Thr,Ser,Tyr,Tyr,Leu,Ile,Ser,Asn,Ile,Cys,Gly,Val],[Leu,Met,Thr,Asp],[Thr,Asp],[Leu],[Asn],[Thr,Thr,Thr,Thr,Asp]]
----- END TESTS ----
+---- END TESTS PROPIOS ----
 
 data BaseNucleotidica = A | C | G | T | U deriving (Eq,Show)
 type CadenaDNA = [BaseNucleotidica]
@@ -53,9 +48,15 @@ obtenerProteinaDeDNA dna = obtenerProteinaDeRNA (transcribir dna)
 obtenerProteinaDeRNA :: CadenaRNA -> [Proteina]
 obtenerProteinaDeRNA rna  = codificarRNA (rna)
 
------------------ seccion fea ------------------------
+
+
+-- SECCIÓN PRINCIPAL --
+
 
 codificarRNA :: CadenaRNA -> [Proteina]
+-- La idea es recorrer toda la cadena y al encontrar una cadena de inicio, que además sincronice con el codón de fin
+-- empezar a codificar. Y seguir chequeando lo que queda de la cadena. De esta forma codificará cada cadena posible
+-- dentro de la cadena principal.
 codificarRNA [] = []
 codificarRNA (b1:[]) = []
 codificarRNA (b1:b2:[]) = []
@@ -63,7 +64,10 @@ codificarRNA (A:U:G:rna) | (sincronizaConCodonDeFin rna) && length (codificarCad
                          | otherwise = codificarRNA(rna)
 codificarRNA (b1:rna) = codificarRNA(rna)
 
+
 codificarCadena :: CadenaRNA -> Proteina
+-- Traducir codones a aminoacidos, hasta que se encuentre con un codón de fin (a éste punto se llega, sí ya se sabe que está bien
+-- sincronizado).
 codificarCadena (b1 : []) = []
 codificarCadena (b1 : b2 : []) = []
 codificarCadena (U : A : G : _) = []
@@ -72,8 +76,8 @@ codificarCadena (U : G : A : _) = []
 codificarCadena (b1:b2:b3:rna) = [traducirCodonAAminoacido (b1,b2,b3)] ++ codificarCadena (rna)
 
 
---
 sincronizaConCodonDeFin :: CadenaRNA -> Bool
+-- Chequea sí sincroniza con codón de fin.
 sincronizaConCodonDeFin [] = False
 sincronizaConCodonDeFin (b1 : []) = False
 sincronizaConCodonDeFin (b1 : b2 : []) = False
@@ -84,20 +88,12 @@ sincronizaConCodonDeFin (b1 : b2 : b3 : rna) = False || sincronizaConCodonDeFin 
 
 obtenerProteinas :: CadenaDNA -> [Proteina]
 obtenerProteinas dna = (obtenerProteinaDeDNA dna) ++ (obtenerProteinaDeDNA (obtenerCadenaReverseDNA dna)) ++ obtenerProteinaDeDNA (complementarCadenaDNA dna) ++ obtenerProteinaDeDNA (obtenerCadenaReverseDNA (complementarCadenaDNA dna))
--- Dada una cadena de DNA devuelve una lista de las proteinas codificandas. En caso de que una
--- secuencia codifique más de una proteína, todas deben estar presentes en la lista que devuelva la
--- función. El orden en que deben aparecer es: 1) las codificadas por la secuencia original, 2) por la
--- secuencia reversa, 3) por la secuencia complementaria, 4) por la secuencia complementaria reversa.
--- Algunas secuencias válidas de DNA no codifican proteínas; para esos casos la función debe devolver
--- la lista vacía. OBS: Usar las dos anteriores.
 
 
 
 
 
-
-
--- Funcion que dado un codon devuelve el correspondiente aminoacido
+-- Función que dado un codon devuelve el correspondiente aminoacido
 traducirCodonAAminoacido:: Codon -> Aminoacido
 traducirCodonAAminoacido (A, A, A) = Lys
 traducirCodonAAminoacido (A, A, U) = Asn
