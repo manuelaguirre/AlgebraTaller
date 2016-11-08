@@ -1,6 +1,6 @@
 module TPv2 where
 
--- Integarntes: Manuel Aguirre, Max Schulkin, Alejo Amiras
+-- Integrantes: Manuel Aguirre, Maximiliano Schulkin, Alejo Amiras
 -- Turno: Miércoles (Tarde)
 
 ------ TESTS PROPIOS ------
@@ -57,6 +57,7 @@ codificarRNA :: CadenaRNA -> [Proteina]
 -- La idea es recorrer toda la cadena y al encontrar una cadena de inicio, que además sincronice con el codón de fin
 -- empezar a codificar. Y seguir chequeando lo que queda de la cadena. De esta forma codificará cada cadena posible
 -- dentro de la cadena principal.
+
 codificarRNA [] = []
 codificarRNA (b1:[]) = []
 codificarRNA (b1:b2:[]) = []
@@ -66,8 +67,8 @@ codificarRNA (b1:rna) = codificarRNA(rna)
 
 
 codificarCadena :: CadenaRNA -> Proteina
--- Traducir codones a aminoacidos, hasta que se encuentre con un codón de fin (a éste punto se llega, sí ya se sabe que está bien
--- sincronizado).
+-- Traducir codones a aminoacidos, hasta que se encuentre con un codón de fin
+-- (a éste punto se llega, sí ya se sabe que está bien sincronizado).
 codificarCadena (b1 : []) = []
 codificarCadena (b1 : b2 : []) = []
 codificarCadena (U : A : G : _) = []
