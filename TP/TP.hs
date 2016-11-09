@@ -64,7 +64,7 @@ codificarRNA :: CadenaRNA -> [Proteina]
 codificarRNA [] = []
 codificarRNA (b1:[]) = []
 codificarRNA (b1:b2:[]) = []
-codificarRNA (A:U:G:rna) | (sincronizaConCodonDeFin rna) && length (codificarCadena rna) > 0 = [codificarCadena (rna)] ++ codificarRNA (rna)
+codificarRNA (A:U:G:rna) | (sincronizaConCodonDeFin rna) && length (codificarCadena rna) > 0 = [codificarCadena (rna)] ++ codificarRNA (cadenaRestante rna)
                          | otherwise = codificarRNA(rna)
 codificarRNA (b1:rna) = codificarRNA(rna)
 
@@ -89,6 +89,13 @@ sincronizaConCodonDeFin (U : A : G : _) = True
 sincronizaConCodonDeFin (U : A : A : _) = True
 sincronizaConCodonDeFin (U : G : A : _) = True
 sincronizaConCodonDeFin (b1 : b2 : b3 : rna) = False || sincronizaConCodonDeFin (rna)
+
+cadenaRestante :: CadenaRNA -> CadenaRNA
+cadenaRestante [] = [] 
+cadenaRestante (U : A : G : res) = res
+cadenaRestante (U : A : A : res) = res
+cadenaRestante (U : G : A : res) = res
+cadenaRestante (b1 : b2 : b3 : res) = cadenaRestante res
 
 obtenerProteinas :: CadenaDNA -> [Proteina]
 obtenerProteinas dna = (obtenerProteinaDeDNA dna) ++ (obtenerProteinaDeDNA (obtenerCadenaReverseDNA dna)) ++ obtenerProteinaDeDNA (complementarCadenaDNA dna) ++ obtenerProteinaDeDNA (obtenerCadenaReverseDNA (complementarCadenaDNA dna))
