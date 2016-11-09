@@ -1,15 +1,20 @@
 module TP where
 
--- Integarntes: Manuel Aguirre, Max Schulkin, Alejo Amiras
+-- Integrantes:
+-- Alejo Amiras LU: ###/16
+-- Manuel Aguirre LU: ###/16
+-- Maximiliano Schulkin LU: 660/13
 -- Turno: Miércoles (Tarde)
 
------- TESTS ------
+------ TESTS PROPIOS ------
 cadenaDNA1 = [A,T,A,C,T,C,G,T,A,A,T,T,C,A,C,T,C,C]          -- >     [[Ser,Ile,Lys]]
+cadenaRNA1 = transcribir cadenaDNA1
 cadenaDNA2 = [T,T,A,A,T,A,C,G,A,C,A,T,A,A,T,T,A,T]          -- >     [[Leu,Tyr],[Ser,Tyr]]
+cadenaRNA2 = transcribir cadenaDNA2
 cadenaDNA3 = [G,C,C,T,T,G,A,T,A,T,G,G,A,G,A,A,C,T,C,A,T,T]  -- >     []
-cadenaRNA1 = [A,U,G,A,A,A,A,U,G,A,A,A,U,A,A,A,A,A,U,A,A]    -- >     [[Lys,Met,Lys],[Lys]]
---test10 = [A,U,G,U,G,A,A,U,G,U,U,U,U,G,A]                    -- >     [[Phe]]
----- END TESTS ----
+cadenaRNA3 = transcribir cadenaDNA3
+cadenaRNA4 = [A,U,G,A,A,A,A,U,G,A,A,A,U,A,A,A,A,A,U,A,A]    -- >     [[Lys,Met,Lys],[Lys]]
+---- END TESTS PROPIOS ----
 
 data BaseNucleotidica = A | C | G | T | U deriving (Eq,Show)
 type CadenaDNA = [BaseNucleotidica]
@@ -38,43 +43,45 @@ obtenerCadenaReverseDNA [] = []
 obtenerCadenaReverseDNA (b : bs) = obtenerCadenaReverseDNA bs ++ [b]
 
 transcribir :: CadenaDNA -> CadenaRNA
-transcribir cd = reemplazarTsporUs ( complementarCadenaDNA cd )
-
------------------ seccion fea ------------------------
-
-traducirListaDeCodonesAAminoacidos :: CadenaRNA -> Proteina
-traducirListaDeCodonesAAminoacidos (c1:c2:c3:cs) = [traducirCodonAAminoacido (c1,c2,c3)] ++ traducirListaDeCodonesAAminoacidos cs
-traducirListaDeCodonesAAminoacidos _ = []
-
-principioRNA :: CadenaRNA -> CadenaRNA
-principioRNA (A : U : G : rna) | (sincronizaConCodonDeFin rna) == True = rna
-principioRNA ( _ : rna ) | length rna > 2 = principioRNA rna
-                         | otherwise = []
-
--- Funciona cuando va de 3 en 3 (esto no debería importar ya que se llama después de haber llamado a
--- 'sincronizaConCodonDeFin' en principioRNA, asegurándonos que va a tener final.
-finalRNA :: CadenaRNA -> CadenaRNA
-finalRNA [] = []
-finalRNA (b1 : []) = []
-finalRNA (b1 : b2 : []) = []
-finalRNA (U : A : G : _) = []
-finalRNA (U : A : A : _) = []
-finalRNA (U : G : A : _) = []
-finalRNA (b1 : b2 : b3 : rna) = [b1,b2,b3] ++ finalRNA (rna)
-
--- obtenerRNAparaCodificar [G, G, A, A, A, U, G, T, T, T, T, T, T,  U, G, A] FUNCIONÓ
-obtenerRNAparaCodificar :: CadenaRNA -> CadenaRNA
-obtenerRNAparaCodificar rna = finalRNA (principioRNA rna)
-
-obtenerProteinaDeRNA :: CadenaRNA -> [Proteina]
-obtenerProteinaDeRNA rna | length (obtenerRNAparaCodificar  rna) > 0 = [traducirListaDeCodonesAAminoacidos (obtenerRNAparaCodificar  rna)] ++ obtenerProteinaDeRNA ( principioRNA rna )
-                         | otherwise = []
+transcribir dna = reemplazarTsporUs ( complementarCadenaDNA dna )
 
 obtenerProteinaDeDNA :: CadenaDNA -> [Proteina]
 obtenerProteinaDeDNA dna = obtenerProteinaDeRNA (transcribir dna)
 
---
+obtenerProteinaDeRNA :: CadenaRNA -> [Proteina]
+obtenerProteinaDeRNA rna  = codificarRNA (rna)
+
+
+
+-- SECCIÓN PRINCIPAL --
+
+
+codificarRNA :: CadenaRNA -> [Proteina]
+-- La idea es recorrer toda la cadena y al encontrar una cadena de inicio, que además sincronice con el codón de fin
+-- empezar a codificar. Y seguir chequeando lo que queda de la cadena. De esta forma codificará cada cadena posible
+-- dentro de la cadena principal.
+
+codificarRNA [] = []
+codificarRNA (b1:[]) = []
+codificarRNA (b1:b2:[]) = []
+codificarRNA (A:U:G:rna) | (sincronizaConCodonDeFin rna) && length (codificarCadena rna) > 0 = [codificarCadena (rna)] ++ codificarRNA (rna)
+                         | otherwise = codificarRNA(rna)
+codificarRNA (b1:rna) = codificarRNA(rna)
+
+
+codificarCadena :: CadenaRNA -> Proteina
+-- Traducir codones a aminoacidos, hasta que se encuentre con un codón de fin
+-- (a éste punto se llega, sí ya se sabe que está bien sincronizado).
+codificarCadena (b1 : []) = []
+codificarCadena (b1 : b2 : []) = []
+codificarCadena (U : A : G : _) = []
+codificarCadena (U : A : A : _) = []
+codificarCadena (U : G : A : _) = []
+codificarCadena (b1:b2:b3:rna) = [traducirCodonAAminoacido (b1,b2,b3)] ++ codificarCadena (rna)
+
+
 sincronizaConCodonDeFin :: CadenaRNA -> Bool
+-- Chequea sí sincroniza con codón de fin.
 sincronizaConCodonDeFin [] = False
 sincronizaConCodonDeFin (b1 : []) = False
 sincronizaConCodonDeFin (b1 : b2 : []) = False
@@ -84,21 +91,13 @@ sincronizaConCodonDeFin (U : G : A : _) = True
 sincronizaConCodonDeFin (b1 : b2 : b3 : rna) = False || sincronizaConCodonDeFin (rna)
 
 obtenerProteinas :: CadenaDNA -> [Proteina]
-obtenerProteinas dna = (obtenerProteinaDeDNA dna) ++ (obtenerProteinaDeDNA (reverse dna)) ++ obtenerProteinaDeDNA (complementarCadenaDNA dna) ++ obtenerProteinaDeDNA (reverse (complementarCadenaDNA dna))
--- Dada una cadena de DNA devuelve una lista de las proteinas codificandas. En caso de que una
--- secuencia codifique más de una proteína, todas deben estar presentes en la lista que devuelva la
--- función. El orden en que deben aparecer es: 1) las codificadas por la secuencia original, 2) por la
--- secuencia reversa, 3) por la secuencia complementaria, 4) por la secuencia complementaria reversa.
--- Algunas secuencias válidas de DNA no codifican proteínas; para esos casos la función debe devolver
--- la lista vacía. OBS: Usar las dos anteriores.
+obtenerProteinas dna = (obtenerProteinaDeDNA dna) ++ (obtenerProteinaDeDNA (obtenerCadenaReverseDNA dna)) ++ obtenerProteinaDeDNA (complementarCadenaDNA dna) ++ obtenerProteinaDeDNA (obtenerCadenaReverseDNA (complementarCadenaDNA dna))
 
 
 
 
 
-
-
--- Funcion que dado un codon devuelve el correspondiente aminoacido
+-- Función que dado un codon devuelve el correspondiente aminoacido
 traducirCodonAAminoacido:: Codon -> Aminoacido
 traducirCodonAAminoacido (A, A, A) = Lys
 traducirCodonAAminoacido (A, A, U) = Asn

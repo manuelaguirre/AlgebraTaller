@@ -1,4 +1,4 @@
-import TPv2
+import TP
 
 --funcion que corre todos los tests
 runTests :: IO ()
